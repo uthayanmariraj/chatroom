@@ -6,7 +6,7 @@ export default function InvitePage({ loggedIn, username }) {
     const { token } = useParams()
     const navigate = useNavigate()
     const socket = useContext(SocketContext)
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
     const [status, setStatus] = useState("loading") // loading, invalid, processing
     const [message, setMessage] = useState("Verifying invite link...")

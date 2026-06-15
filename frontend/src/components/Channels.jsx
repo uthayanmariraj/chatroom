@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import InviteModal from './invites/InviteModal.jsx' 
 
 export default function Channels({ roomName, roomId, adminName }) {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const [showInviteModal, setShowInviteModal] = useState(false)

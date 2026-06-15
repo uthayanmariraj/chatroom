@@ -7,7 +7,7 @@ import { io } from 'socket.io-client'
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 const socket = io(BACKEND_URL)
 
 export default function App() {

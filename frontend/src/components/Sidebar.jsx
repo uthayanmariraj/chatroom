@@ -5,7 +5,7 @@ import Channels from './Channels.jsx'
 import Modal from './Modal.jsx'
 
 export default function Sidebar({setLoggedIn, setUsername}) {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [rooms, setRooms] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [newRoomName, setNewRoomName] = useState("");

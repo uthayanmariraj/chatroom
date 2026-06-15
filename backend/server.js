@@ -61,7 +61,7 @@ const io = new Server(server, {
 app.use(cors())
 app.use(express.json())
 
-app.get('/',(req,res) => {
+app.get('/', (req, res) => {
     res.send('<h2>thinkpadclit</h2>')
 })
 
@@ -353,7 +353,7 @@ io.on("connection", (socket) => {
 
         io.to(room).emit("room-users", Array.from(activeRoomUsers.get(room)))
 
-        socket.to(room).emit("receive-message",{
+        socket.to(room).emit("receive-message", {
             room,
             username: "reserved",
             message: `${username} has joined the chat`,
@@ -370,12 +370,12 @@ io.on("connection", (socket) => {
             if (activeRoomUsers.has(room)) {
                 activeRoomUsers.get(room).delete(username)
                 io.to(room).emit("room-users", Array.from(activeRoomUsers.get(room)))
-                io.to(room).emit("receive-message", { 
-                room, 
-                username: "System", 
-                message: `${username} has left the chat`, 
-                isSystem: true 
-            })
+                io.to(room).emit("receive-message", {
+                    room,
+                    username: "System",
+                    message: `${username} has left the chat`,
+                    isSystem: true
+                })
                 if (activeRoomUsers.get(room).size === 0) {
                     activeRoomUsers.delete(room)
                 }
@@ -400,7 +400,7 @@ io.on("connection", (socket) => {
     })
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 server.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`)
 })

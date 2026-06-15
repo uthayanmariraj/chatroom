@@ -4,7 +4,7 @@ import GenerateLink from './GenerateLink'
 import GeneratedLink from './GeneratedLink'
 
 export default function InviteModal({ onClose, roomId, roomName }) {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const username = useContext(UserContext)
 
     const [expiresIn, setExpiresIn] = useState("86400") // Default 1 day (seconds)
