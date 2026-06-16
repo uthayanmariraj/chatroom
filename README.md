@@ -1,3 +1,9 @@
+# Chatroom
+
+Chatroom is a full-stack real-time messaging application that allows users to create and join chat rooms, communicate instantly through WebSockets, and manage access using public or private room settings. The platform includes secure user authentication, invite-based room access, live member tracking, and persistent data storage through MySQL.
+
+Built with React, Node.js, Express, Socket.IO, and MySQL, the application provides a responsive chat experience with real-time message delivery, room management, and secure access control.
+
 # Features
 
 ## Authentication
