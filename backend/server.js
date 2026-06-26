@@ -70,6 +70,7 @@ app.post('/signup', async (req, res) => {
         const { username, password } = req.body
         const [rows] = await pool.execute('SELECT * FROM users WHERE username = ?', [username])
         if (rows.length > 0) {
+            console.log("u")
             return res.status(401).json({
                 success: false,
                 message: "Username already exists."

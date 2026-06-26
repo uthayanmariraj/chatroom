@@ -7,7 +7,7 @@ export default function Signup({ setLoggedIn, setUsername }) {
     const [error, setError] = useState(false)
     const [signedUp, setSignedUp] = useState(false)
 
-    async function handleLogIn(e) {
+    async function handleSignup(e) {
         e.preventDefault()
         try {
             const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
@@ -48,7 +48,7 @@ export default function Signup({ setLoggedIn, setUsername }) {
 
     return (
         <div>
-            <form className='login-form' onSubmit={handleLogIn}>
+            <form className='login-form' onSubmit={handleSignup}>
                 {error && (<p>username already taken</p>)}
                 <p className="title">Username:</p>
                 <input value={userName} className="username-box" onChange={(e) => { setUserName(e.target.value) }} />
