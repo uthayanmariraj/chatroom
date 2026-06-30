@@ -143,7 +143,7 @@ app.get('/rooms', async (req, res) => {
     try {
         const userName = req.query.userName || "";
         const [rooms] = await pool.execute(
-            'SELECT DISTINCT r.id, r.room_name, r.admin_name FROM rooms r LEFT JOIN room_members rm ON r.id = rm.room_id WHERE (r.privacy = "PUB" OR r.admin_name = ? OR rm.username = ?)',
+            'SELECT DISTINCT BIN_TO_UUID(r.id, 1) AS id, r.room_name, r.admin_name FROM rooms r LEFT JOIN room_members rm ON r.id = rm.room_id WHERE (r.privacy = "PUB" OR r.admin_name = ? OR rm.username = ?)',
             [userName, userName]
         )
         return res.json({
@@ -161,7 +161,7 @@ app.delete('/rooms/:id', async (req, res) => {
         const { id } = req.params
         const { userName } = req.body
 
-        const [rows] = await pool.execute('SELECT admin_name FROM rooms WHERE id = ?', [id])
+        const [rows] = await pool.execute('SELECT admin_name FROM rooms WHERE id = UUID_TO_BIN(?, 1)', [id])
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: "Room not found." })
         }
@@ -169,7 +169,7 @@ app.delete('/rooms/:id', async (req, res) => {
         if (room.admin_name !== userName) {
             return res.status(403).json({ success: false, message: "Only the admin can delete this room." })
         }
-        await pool.execute('DELETE FROM rooms WHERE id = ?', [id])
+        await pool.execute('DELETE FROM rooms WHERE id = UUID_TO_BIN(?, 1)', [id])
 
         io.emit("room-deleted")
 
@@ -187,12 +187,12 @@ app.post('/rooms/:id/invites', async (req, res) => {
         const [rows] = await pool.execute(
             `SELECT 1 FROM rooms r 
             LEFT JOIN room_members rm ON r.id = rm.room_id 
-            WHERE r.id = ? AND (r.admin_name = ? OR rm.username = ?)`,
+            WHERE r.id = UUID_TO_BIN(?, 1) AND (r.admin_name = ? OR rm.username = ?)`,
             [roomId, username, username]
         )
         if (!rows || rows.length === 0) {
             const [[priv]] = await pool.execute(
-                `SELECT privacy FROM rooms WHERE id = ?`, [roomId]
+                `SELECT privacy FROM rooms WHERE id = UUID_TO_BIN(?, 1)`, [roomId]
             )
             if (priv.privacy === 'PRIV') {
                 return res.status(403).json({ success: false, message: "not allowed to generate" });
@@ -204,7 +204,7 @@ app.post('/rooms/:id/invites', async (req, res) => {
         if (expiresIn) {
             expiresAt = new Date(Date.now() + expiresIn * 1000);
         }
-        await pool.execute(`INSERT INTO room_invites (room_id, token, created_by, max_uses, expires_at) VALUES (?,?,?,?,?)`,
+        await pool.execute(`INSERT INTO room_invites (room_id, token, created_by, max_uses, expires_at) VALUES (UUID_TO_BIN(?, 1),?,?,?,?)`,
             [roomId, token, username, maxUses, expiresAt])
 
         res.json({
@@ -221,7 +221,7 @@ app.post('/rooms/:id/invites', async (req, res) => {
 app.get('/invites/:token', async (req, res) => {
     try {
         const { token } = req.params;
-        const [rows] = await pool.execute(`SELECT ri.room_id, ri.max_uses, ri.uses, ri.expires_at, r.room_name
+        const [rows] = await pool.execute(`SELECT BIN_TO_UUID(ri.room_id, 1) AS room_id, ri.max_uses, ri.uses, ri.expires_at, r.room_name
             FROM room_invites ri JOIN rooms r ON ri.room_id = r.id WHERE ri.token = ?`, [token])
         if (!rows || rows.length === 0) {
             return res.status(403).json({ success: false, message: "invalid token" });
@@ -265,7 +265,7 @@ app.post('/invites/:token/join', async (req, res) => {
         const { username } = req.body;
         const [invites] = await pool.execute(
             `SELECT 
-            ri.room_id, 
+            BIN_TO_UUID(ri.room_id, 1) AS room_id, 
             ri.max_uses, 
             ri.uses, 
             ri.expires_at, 
@@ -301,7 +301,7 @@ app.post('/invites/:token/join', async (req, res) => {
             })
         }
         await pool.execute(
-            'INSERT INTO room_members (room_id, username) VALUES (?, ?)',
+            'INSERT INTO room_members (room_id, username) VALUES (UUID_TO_BIN(?, 1), ?)',
             [roomId, username]
         )
         await pool.execute(

@@ -84,3 +84,24 @@ Built with React, Node.js, Express, Socket.IO, and MySQL, the application provid
 
 * Parameterized SQL queries using placeholders (`?`)
 * Protection against SQL injection attacks
+
+# Database Setup
+
+To set up the MySQL database schema for this project:
+
+1. **Configure Environment Variables**:
+   Ensure you have a `.env` file in the `backend/` directory configured with your database credentials (matching the format in `backend/.env.example`).
+   ```env
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=your_database_password_here
+   DB_NAME=chatroom_db
+   ```
+
+2. **Initialize Database Schema**:
+   Navigate to the `backend/` directory and run:
+   ```bash
+   npm run init-db
+   ```
+   This will automatically create the database if it doesn't exist and set up all required tables (`users`, `rooms`, `room_members`, `room_invites`).
+
